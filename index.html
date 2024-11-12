@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>物资管理信息系统</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: url(./images/bg1.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      input,
+      button {
+        margin: 10px 0;
+        padding: 5px;
+      }
+
+      /* 模态窗口样式 */
+      .modal {
+        display: none; /* 默认隐藏 */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      tr {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 style="font-size: 60px; color: #f2f2f2">物资管理信息系统</h1>
+
+      <button
+        onclick="showAddMaterialModal()"
+        style="
+          background-color: red;
+          border: none;
+          padding: 4px 8px;
+          color: #f2f2f2;
+          border-radius: 5px;
+        "
+      >
+        添加物资
+      </button>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>名称</th>
+            <th>数量</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="materialList">
+         
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 添加物资模态窗口 -->
+    <div id="addMaterialModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeAddMaterialModal()">&times;</span>
+        <h2>添加新物资</h2>
+        <form id="addMaterialForm">
+          <label for="name">名称:</label>
+          <input type="text" id="name" required />
+          <label for="quantity">数量:</label>
+          <input type="number" id="quantity" required />
+          <button type="button" onclick="submitAddMaterialForm()">确定</button>
+          <button type="button" onclick="closeAddMaterialModal()">取消</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+      let materials = [];
+
+      function loadMaterials() {
+        const materialList = document.getElementById("materialList");
+        materialList.innerHTML = "";
+        materials.forEach((material, index) => {
+          const row = `<tr>
+                        <td>${material.id}</td>
+                        <td>${material.name}</td>
+                        <td>${material.quantity}</td>
+                        <td>
+                            <button onclick="editMaterial(${index})">编辑</button>
+                            <button onclick="deleteMaterial(${index})">删除</button>
+                        </td>
+                     </tr>`;
+          materialList.innerHTML += row;
+        });
+      }
+
+      function showAddMaterialModal() {
+        document.getElementById("addMaterialModal").style.display = "block";
+      }
+
+      function closeAddMaterialModal() {
+        document.getElementById("addMaterialModal").style.display = "none";
+      }
+
+      function submitAddMaterialForm() {
+        const name = document.getElementById("name").value;
+        const quantity = parseInt(document.getElementById("quantity").value);
+
+        if (name && !isNaN(quantity)) {
+          const newMaterial = {
+            id: materials.length + 1,
+            name: name,
+            quantity: quantity,
+          };
+          materials.push(newMaterial);
+          loadMaterials();
+          closeAddMaterialModal();
+        } else {
+          alert("请输入有效的物资名称和数量");
+        }
+      }
+
+      function editMaterial(index) {
+        // 弹出对话框让用户修改选定的物资信息
+        // 修改后重新加载列表
+        console.log("编辑物资:", index);
+      }
+
+      function deleteMaterial(index) {
+        materials.splice(index, 1);
+        loadMaterials();
+      }
+
+      // 初始化页面
+      loadMaterials();
+    </script>
+  </body>
+</html>
